@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) ${YEAR} ${PACKAGE_NAME}
+ */
+
+package com.company.sales;
+
+import com.company.sales.entity.Customer;
+import com.company.sales.gui.PropertyChangedEvent;
+import com.company.sales.gui.customer.CustomerEdit;
+import com.company.sales.mvp.presentes.impl.CustomerPresenterImpl;
+import com.haulmont.cuba.client.testsupport.CubaClientTestCase;
+import com.haulmont.cuba.core.global.View;
+import com.haulmont.cuba.gui.components.ValidationException;
+import com.haulmont.cuba.gui.components.Window;
+import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.data.DsBuilder;
+import mockit.Mocked;
+import mockit.integration.junit4.JMockit;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Collections;
+
+public class CustomerPresenterTest extends GuiTestCase {
+
+    CustomerEdit editor;
+
+    @Mocked
+    Window.Editor frame;
+
+    private Customer customer;
+    private String prevValue;
+    private String newValue;
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        editor = new CustomerEdit();
+        editor.setWrappedFrame(frame);
+        customer = new Customer();
+        prevValue = "Prev";
+        newValue = "New";
+        customer.setName(prevValue);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testValidate() throws ValidationException {
+        editor.init(Collections.emptyMap());
+
+        Datasource<Customer> ds = getDatasource(customer, "customerDs", View.LOCAL);
+        editor.setCustomerDs(ds);
+
+        PropertyChangedEvent<Customer> event = new PropertyChangedEvent<>("name", prevValue, newValue);
+        CustomerPresenterImpl customerPresenter = new CustomerPresenterImpl(editor);
+        customerPresenter.validate(event);
+    }
+}
