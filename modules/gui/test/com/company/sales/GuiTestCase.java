@@ -67,7 +67,7 @@ public class GuiTestCase extends CubaClientTestCase {
         };
     }
 
-    protected <E extends Entity> Datasource<E> getDatasource(E entity, String datasourceId, String view) {
+    protected <E extends Entity> Datasource<E> createDatasource(E entity, String datasourceId, String view) {
         // noinspection unchecked
         Datasource<E> datasource = new DsBuilder()
                 .setId(datasourceId)
