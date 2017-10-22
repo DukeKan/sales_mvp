@@ -87,4 +87,8 @@ public class CustomerPresenterImpl implements Presenter{
         screen.setPropertyValue(customerDs, propertyName, value);
         enablePropertyChangeListeners(customerDs);
     }
+
+    public void setModel(CustomerModel model) {
+        this.model = model;
+    }
 }

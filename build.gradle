@@ -56,9 +56,11 @@ configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'idea')
     apply(plugin: 'cuba')
 
+    repositories { jcenter() }
     dependencies {
         testCompile('org.jmockit:jmockit:1.15')
         testCompile('junit:junit:4.12')
+        dependencies { testCompile "org.mockito:mockito-core:2.+" }
     }
 
     task sourceJar(type: Jar) {

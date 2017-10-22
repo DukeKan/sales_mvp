@@ -9,11 +9,8 @@ import com.company.sales.entity.Order;
 import com.company.sales.mvp.models.interfaces.CustomerModel;
 import com.company.sales.services.CustomerService;
 import com.haulmont.cuba.core.global.AppBeans;
-import com.haulmont.cuba.core.global.DataManager;
-import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by DukeKan on 13.10.2017.
@@ -21,7 +18,7 @@ import java.util.List;
 public class CustomerModelImpl implements CustomerModel<Customer> {
 
     @Override
-    public boolean allOrdersAreZero(List<Order> orders) {
+    public boolean allOrdersAreZero(Collection<Order> orders) {
         return orders.stream().allMatch(order -> order.getAmount() != null && order.getAmount().toBigInteger().intValue() == 0);
     }
 
