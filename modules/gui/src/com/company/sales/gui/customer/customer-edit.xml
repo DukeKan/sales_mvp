@@ -14,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://editCaption"
         class="com.company.sales.gui.customer.CustomerEdit"
@@ -45,12 +44,29 @@
         </fieldGroup>
         <label value="msg://Orders"/>
         <table id="ordersTable"
-               height="100px"
-               width="300px">
+               height="300px"
+               width="600px">
+            <actions>
+                <action id="create"
+                        caption="Create"
+                        openType="DIALOG"/>
+                <action id="edit"
+                        caption="Edit"
+                        openType="DIALOG"/>
+                <action id="remove"
+                        caption="Remove"/>
+            </actions>
             <columns>
                 <column id="date"/>
                 <column id="amount"/>
             </columns>
+            <buttonsPanel>
+                <button action="ordersTable.create"/>
+                <button action="ordersTable.edit"/>
+                <button action="ordersTable.remove"/>
+                <button caption="RemoveAll" invoke="onRemoveAll"/>
+                <button caption="Calculate" invoke="onCalculate"/>
+            </buttonsPanel>
             <rows datasource="ordersDs"/>
         </table>
         <frame id="windowActions"

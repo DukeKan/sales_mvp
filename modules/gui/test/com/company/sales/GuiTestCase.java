@@ -14,6 +14,7 @@ import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.View;
 import com.haulmont.cuba.core.sys.MetadataImpl;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.DsBuilder;
 import com.haulmont.cuba.gui.data.impl.DatasourceImpl;
@@ -26,10 +27,12 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
+import java.util.UUID;
+
 /**
  * Created by DukeKan on 19.10.2017.
  */
-public class GuiTestCase extends CubaClientTestCase {
+public  class GuiTestCase<E extends Entity<UUID>> extends CubaClientTestCase {
 
     @Mocked
     protected ComponentsFactory componentsFactory;
@@ -67,7 +70,7 @@ public class GuiTestCase extends CubaClientTestCase {
         };
     }
 
-    protected <E extends Entity> Datasource<E> createDatasource(E entity, String datasourceId, String view) {
+    protected Datasource<E> createDatasource(E entity, String datasourceId, String view) {
         // noinspection unchecked
         Datasource<E> datasource = new DsBuilder()
                 .setId(datasourceId)
@@ -79,5 +82,20 @@ public class GuiTestCase extends CubaClientTestCase {
         ((DatasourceImpl) datasource).valid();
 
         return datasource;
+    }
+
+    protected CollectionDatasource<E, UUID> createCollectionDatasource(
+            E entity, String datasourceId, String view) {
+        // noinspection unchecked
+        CollectionDatasource<E, UUID> collectionDatasource = new DsBuilder()
+                .setId(datasourceId)
+                .setJavaClass(entity.getClass())
+                .setView(viewRepository.getView(entity.getMetaClass(), view))
+                .buildCollectionDatasource();
+
+        collectionDatasource.setItem(entity);
+        ((DatasourceImpl) collectionDatasource).valid();
+
+        return collectionDatasource;
     }
 }

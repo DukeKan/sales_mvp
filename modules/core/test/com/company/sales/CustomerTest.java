@@ -17,6 +17,7 @@
 package com.company.sales;
 
 import com.company.sales.entity.Customer;
+import com.company.sales.services.CustomerService;
 import com.haulmont.cuba.core.global.*;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -64,5 +65,23 @@ public class CustomerTest {
 
         // Remove the customer
         dataManager.remove(loaded);
+    }
+
+    @Test
+    public void testCalculateAmount() throws Exception {
+        DataManager dataManager = AppBeans.get(DataManager.class);
+        CustomerService customerService = AppBeans.get(CustomerService.class);
+
+        Customer customer = metadata.create(Customer.class);
+        customer.setName("Test customer");
+
+        customer = dataManager.commit(customer);
+
+        int amount = customerService.countAmount(customer);
+
+        assertEquals(amount, 0);
+
+        // Remove the customer
+        dataManager.remove(customer);
     }
 }

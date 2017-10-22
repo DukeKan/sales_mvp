@@ -15,24 +15,30 @@
  */
 package com.company.sales.gui.customer;
 
-
-
 import com.company.sales.entity.Customer;
+import com.company.sales.entity.Order;
 import com.company.sales.mvp.presentes.impl.CustomerPresenterImpl;
 import com.company.sales.mvp.presentes.interfaces.Presenter;
 import com.haulmont.cuba.gui.components.AbstractEditor;
+import com.haulmont.cuba.gui.components.Button;
+import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 
 import javax.inject.Inject;
+import java.util.Collection;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEditScreen {
     private Presenter presenter;
+    private Consumer<Customer> calculateBtnListener;
 
     @Inject
     private Datasource<Customer> customerDs;
     @Inject
-    private CollectionDatasource ordersDs;
+    private CollectionDatasource<Order, UUID> ordersDs;
+
 
     @Override
     protected void postInit() {
@@ -40,15 +46,46 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
         presenter = new CustomerPresenterImpl(this);
     }
 
+    public void onRemoveAll() {
+        Collection<Order> orders = ordersDs.getItems();
+        safeRemoveItemsFromDatasource(ordersDs, orders);
+    }
+
+    public void onCalculate(){
+        if (calculateBtnListener != null) {
+            calculateBtnListener.accept(getItem());
+        }
+    }
+
     public void showIncorrectNameNotification(){
         showNotification("Incorrect name!");
+    }
+
+    @Override
+    public void showAmountSum(int amount) {
+        showNotification("Amount: " + amount);
+    }
+
+    @Override
+    public void addCalculateBtnListener(Consumer<Customer> listener) {
+        calculateBtnListener = listener;
     }
 
     public Datasource<Customer> getCustomerDs() {
         return customerDs;
     }
 
+    @Override
+    public CollectionDatasource<Order, UUID> getOrdersDs() {
+        return ordersDs;
+    }
+
     public void setCustomerDs(Datasource<Customer> customerDs) {
         this.customerDs = customerDs;
     }
+
+    public void setOrdersDs(CollectionDatasource<Order, UUID> ordersDs) {
+        this.ordersDs = ordersDs;
+    }
+
 }
