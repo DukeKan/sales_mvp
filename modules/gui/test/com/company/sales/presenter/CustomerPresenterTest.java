@@ -2,7 +2,7 @@
  * Copyright (c) ${YEAR} ${PACKAGE_NAME}
  */
 
-package com.company.sales;
+package com.company.sales.presenter;
 
 import com.company.sales.entity.Customer;
 import com.company.sales.entity.Order;
@@ -22,13 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
 import static com.haulmont.cuba.gui.data.CollectionDatasource.Operation.REMOVE;
 
-public class CustomerPresenterTest extends GuiTestCase {
+public class CustomerPresenterTest extends PresenterTestCase {
 
     CustomerEdit editor;
 

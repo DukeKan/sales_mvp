@@ -2,7 +2,7 @@
  * Copyright (c) ${YEAR} ${PACKAGE_NAME}
  */
 
-package com.company.sales;
+package com.company.sales.presenter;
 
 import com.company.sales.entity.Customer;
 import com.haulmont.chile.core.model.Session;
@@ -32,7 +32,7 @@ import java.util.UUID;
 /**
  * Created by DukeKan on 19.10.2017.
  */
-public  class GuiTestCase<E extends Entity<UUID>> extends CubaClientTestCase {
+public  class PresenterTestCase<E extends Entity<UUID>> extends CubaClientTestCase {
 
     @Mocked
     protected ComponentsFactory componentsFactory;
