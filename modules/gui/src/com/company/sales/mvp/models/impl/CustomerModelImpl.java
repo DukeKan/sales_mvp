@@ -25,6 +25,6 @@ public class CustomerModelImpl implements CustomerModel<Customer> {
     @Override
     public int getOrdersAmount(Customer customer) {
         CustomerService customerService = AppBeans.get(CustomerService.NAME);
-        return customerService.countAmount(customer); // такой проброс выглядит некрасиво
+        return customerService.countAmount(customer); // такой проброс выглядит некрасиво, но зато одна точка входа в сервис
     }
 }

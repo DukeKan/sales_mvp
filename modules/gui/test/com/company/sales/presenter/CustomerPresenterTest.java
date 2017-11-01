@@ -66,15 +66,15 @@ public class CustomerPresenterTest extends PresenterTestCase {
 
     @Test(expected = ValidationException.class)
     public void testPropertyValidate() throws ValidationException {
-        ItemPropertyChangeEvent event = new ItemPropertyChangeEvent<Customer>(null, null, "name", prevValue, newValue);
-        customerPresenter.validate(event);
+        ItemPropertyChangeEvent<Customer> event = new ItemPropertyChangeEvent<>(null, null, "name", prevValue, newValue);
+        customerPresenter.validateCustomerPropertyChange(event);
     }
 
     @Test(expected = ValidationException.class)
     public void testCollectionChangeValidate() throws ValidationException {
         CollectionChangeEvent<Order, UUID> event = new CollectionChangeEvent<>(null, REMOVE, new ArrayList<>());
         when(customerModel.allOrdersAreZero(anyCollection())).thenReturn(true);
-        customerPresenter.validate(event);
+        customerPresenter.validateOrderCollectionChange(event);
         verify(customerModel).allOrdersAreZero(anyCollection());
     }
 }

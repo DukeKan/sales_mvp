@@ -32,7 +32,7 @@ import java.util.UUID;
 /**
  * Created by DukeKan on 19.10.2017.
  */
-public  class PresenterTestCase<E extends Entity<UUID>> extends CubaClientTestCase {
+public  class PresenterTestCase extends CubaClientTestCase {
 
     @Mocked
     protected ComponentsFactory componentsFactory;
@@ -70,7 +70,7 @@ public  class PresenterTestCase<E extends Entity<UUID>> extends CubaClientTestCa
         };
     }
 
-    protected Datasource<E> createDatasource(E entity, String datasourceId, String view) {
+    protected <E extends Entity<UUID>> Datasource<E> createDatasource(E entity, String datasourceId, String view) {
         // noinspection unchecked
         Datasource<E> datasource = new DsBuilder()
                 .setId(datasourceId)
@@ -84,7 +84,7 @@ public  class PresenterTestCase<E extends Entity<UUID>> extends CubaClientTestCa
         return datasource;
     }
 
-    protected CollectionDatasource<E, UUID> createCollectionDatasource(
+    protected <E extends Entity<UUID>> CollectionDatasource<E, UUID> createCollectionDatasource(
             E entity, String datasourceId, String view) {
         // noinspection unchecked
         CollectionDatasource<E, UUID> collectionDatasource = new DsBuilder()
