@@ -4,8 +4,6 @@
 
 package com.company.sales.mvp.presentes.interfaces;
 
-import com.company.sales.entity.Customer;
-import com.company.sales.entity.Order;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.ValidationException;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
@@ -15,7 +13,6 @@ import com.haulmont.cuba.gui.data.CollectionDatasource.Operation;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeEvent;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeListener;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,12 +20,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static com.haulmont.cuba.gui.data.CollectionDatasource.Operation.ADD;
-
 /**
  * Created by DukeKan on 13.10.2017.
  */
-public interface Presenter {
+public interface Presenter <E extends Entity> {
 
     @FunctionalInterface
     interface Validator<T> {
@@ -37,6 +32,7 @@ public interface Presenter {
 
     Set<ItemPropertyChangeListener> propertyChangeListeners = new HashSet<>();
     Set<CollectionChangeListener> collectionChangeListeners = new HashSet<>();
+
 
     default <E extends Entity<UUID>> void registerPropertyChangeListener(Datasource<E> datasource,
                                                                          Validator<ItemPropertyChangeEvent<E>> validation,

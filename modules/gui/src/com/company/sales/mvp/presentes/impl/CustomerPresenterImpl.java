@@ -9,6 +9,7 @@ import com.company.sales.entity.Customer;
 import com.company.sales.entity.Order;
 import com.company.sales.gui.customer.CustomerEdit;
 import com.company.sales.gui.customer.CustomerEditScreen;
+import com.company.sales.mvp.builders.ItemPropertyChangeListenerBuilder;
 import com.company.sales.mvp.models.impl.CustomerModelImpl;
 import com.company.sales.mvp.models.interfaces.CustomerModel;
 import com.company.sales.mvp.presentes.interfaces.Presenter;
@@ -19,6 +20,7 @@ import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeEvent;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static com.haulmont.cuba.gui.data.CollectionDatasource.Operation.ADD;
 
@@ -36,17 +38,18 @@ public class CustomerPresenterImpl implements Presenter {
     }
 
     private void init() {
-        registerPropertyChangeListener(
-                screen.getCustomerDs(),
-                this::validateCustomerPropertyChange,
-                (event) -> {
-                },
-                (event) -> setValueIgnoreListeners(event.getDs(), event.getProperty(), event.getPrevValue()));
-        registerCollectionChangeListener(
-                screen.getOrdersDs(),
-                this::validateOrderCollectionChange,
-                this::processCollectionChange,
-                (event) -> processItemsIgnoreListeners(event.getDs(), event.getItems(), ADD));
+//        registerCollectionChangeListener(
+//                screen.getOrdersDs(),
+//                this::validateOrderCollectionChange,
+//                this::processCollectionChange,
+//                (event) -> processItemsIgnoreListeners(event.getDs(), event.getItems(), ADD));
+        ItemPropertyChangeListenerBuilder<Customer> customerPropertyListenerBuilder = new ItemPropertyChangeListenerBuilder<>();
+        customerPropertyListenerBuilder.setDatasource(screen.getCustomerDs());
+        customerPropertyListenerBuilder.setValidationHandler(this::validateCustomerPropertyChange);
+        customerPropertyListenerBuilder.setAfterNonSuccessValidationHandler((event) ->
+                setValueIgnoreListeners(event.getDs(), event.getProperty(), event.getPrevValue()));
+        customerPropertyListenerBuilder.build();
+
         screen.addCalculateBtnListener(this::onCalculatePressed);
     }
 
