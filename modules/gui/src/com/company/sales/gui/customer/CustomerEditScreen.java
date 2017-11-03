@@ -26,5 +26,6 @@ public interface CustomerEditScreen extends Screen<Customer> {
     CollectionDatasource<Order, UUID> getOrdersDs();
 
     void showIncorrectNameNotification();
+    void showIncorrectOrderAmountNotification();
     void showAmountSum(int amount);
 }

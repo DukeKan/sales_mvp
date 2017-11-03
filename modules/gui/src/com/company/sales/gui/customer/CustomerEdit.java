@@ -62,6 +62,11 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
     }
 
     @Override
+    public void showIncorrectOrderAmountNotification() {
+        showNotification("Incorrect amount!");
+    }
+
+    @Override
     public void showAmountSum(int amount) {
         showNotification("Amount: " + amount);
     }

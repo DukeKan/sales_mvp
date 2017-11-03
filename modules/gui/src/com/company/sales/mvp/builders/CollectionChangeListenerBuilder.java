@@ -4,59 +4,58 @@
 
 package com.company.sales.mvp.builders;
 
-import com.company.sales.mvp.validators.ItemPropertyChangeValidator;
+import com.company.sales.mvp.validators.CollectionChangeValidator;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.ValidationException;
-import com.haulmont.cuba.gui.data.Datasource;
-import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeEvent;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
+import com.haulmont.cuba.gui.data.CollectionDatasource.CollectionChangeEvent;
 
 import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
- * Created by DukeKan on 01.11.2017.
+ * Created by DukeKan on 02.11.2017.
  */
-public class ItemPropertyChangeListenerBuilder<E extends Entity<UUID>>
-        implements DatasourceListenerBuilder<E, Datasource<E>, ItemPropertyChangeValidator<E>, ItemPropertyChangeEvent<E>> {
+public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
+        implements DatasourceListenerBuilder<E, CollectionDatasource<E, UUID>, CollectionChangeValidator<E>, CollectionChangeEvent<E, UUID>> {
 
-    private Datasource<E> datasource;
-    private ItemPropertyChangeValidator<E> validationHandler;
-    private Consumer<ItemPropertyChangeEvent<E>> afterSuccessValidationHandler;
-    private Consumer<ItemPropertyChangeEvent<E>> afterNonSuccessValidationHandler;
-    private Consumer<ItemPropertyChangeEvent<E>> anywayDoneHandler;
+    private CollectionDatasource<E, UUID> datasource;
+    private CollectionChangeValidator<E> validationHandler;
+    private Consumer<CollectionChangeEvent<E, UUID>> afterSuccessValidationHandler;
+    private Consumer<CollectionChangeEvent<E, UUID>> afterNonSuccessValidationHandler;
+    private Consumer<CollectionChangeEvent<E, UUID>> anywayDoneHandler;
 
-    ItemPropertyChangeListenerBuilder(){}
+    CollectionChangeListenerBuilder(){}
 
     @Override
-    public ItemPropertyChangeListenerBuilder<E> setDatasource(Datasource<E> datasource) {
+    public CollectionChangeListenerBuilder<E> setDatasource(CollectionDatasource<E, UUID> datasource) {
         this.datasource = datasource;
-
         return this;
     }
 
     @Override
-    public ItemPropertyChangeListenerBuilder<E> setValidationHandler(ItemPropertyChangeValidator<E> validationHandler) {
+    public CollectionChangeListenerBuilder<E> setValidationHandler(CollectionChangeValidator<E> validationHandler) {
         this.validationHandler = validationHandler;
 
         return this;
     }
 
     @Override
-    public ItemPropertyChangeListenerBuilder<E> setAfterSuccessValidationHandler(Consumer<ItemPropertyChangeEvent<E>> afterSuccessValidationHandler) {
+    public CollectionChangeListenerBuilder<E> setAfterSuccessValidationHandler(Consumer<CollectionChangeEvent<E, UUID>> afterSuccessValidationHandler) {
         this.afterSuccessValidationHandler = afterSuccessValidationHandler;
 
         return this;
     }
 
     @Override
-    public ItemPropertyChangeListenerBuilder<E> setAfterNonSuccessValidationHandler(Consumer<ItemPropertyChangeEvent<E>> afterNonSuccessValidationHandler) {
+    public CollectionChangeListenerBuilder<E> setAfterNonSuccessValidationHandler(Consumer<CollectionChangeEvent<E, UUID>> afterNonSuccessValidationHandler) {
         this.afterNonSuccessValidationHandler = afterNonSuccessValidationHandler;
 
         return this;
     }
 
     @Override
-    public ItemPropertyChangeListenerBuilder<E> setAnywayDoneHandler(Consumer<ItemPropertyChangeEvent<E>> anywayDoneHandler) {
+    public CollectionChangeListenerBuilder<E> setAnywayDoneHandler(Consumer<CollectionChangeEvent<E, UUID>> anywayDoneHandler) {
         this.anywayDoneHandler = anywayDoneHandler;
 
         return this;
@@ -65,7 +64,7 @@ public class ItemPropertyChangeListenerBuilder<E extends Entity<UUID>>
     @Override
     public void build() {
         if (datasource != null) {
-            datasource.addItemPropertyChangeListener(event -> {
+            datasource.addCollectionChangeListener(event -> {
                 if (anywayDoneHandler != null) {
                     anywayDoneHandler.accept(event);
                 }
