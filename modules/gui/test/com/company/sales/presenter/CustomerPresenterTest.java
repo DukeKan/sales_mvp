@@ -60,8 +60,7 @@ public class CustomerPresenterTest extends PresenterTestCase {
         CollectionDatasource<Order, UUID> ordersDs = createCollectionDatasource(order, "ordersDs", View.LOCAL);
         editor.setOrdersDs(ordersDs);
 
-        customerPresenter = new CustomerPresenterImpl(editor);
-        customerPresenter.setModel(customerModel);
+        customerPresenter = new CustomerPresenterImpl(editor, customerModel);
     }
 
     @Test(expected = ValidationException.class)

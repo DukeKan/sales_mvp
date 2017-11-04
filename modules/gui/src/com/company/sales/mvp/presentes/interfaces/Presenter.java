@@ -13,6 +13,7 @@ import com.haulmont.cuba.gui.data.CollectionDatasource.Operation;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeEvent;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeListener;
+import com.haulmont.cuba.gui.data.impl.AbstractDatasource;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,64 +24,23 @@ import java.util.function.Consumer;
 /**
  * Created by DukeKan on 13.10.2017.
  */
-public interface Presenter <E extends Entity> {
-
-    @FunctionalInterface
-    interface Validator<T> {
-        void validate(T t) throws ValidationException;
-    }
-
-    Set<ItemPropertyChangeListener> propertyChangeListeners = new HashSet<>();
-    Set<CollectionChangeListener> collectionChangeListeners = new HashSet<>();
-
-
-    default <E extends Entity<UUID>> void registerPropertyChangeListener(Datasource<E> datasource,
-                                                                         Validator<ItemPropertyChangeEvent<E>> validation,
-                                                                         Consumer<ItemPropertyChangeEvent<E>> afterSuccessValidation,
-                                                                         Consumer<ItemPropertyChangeEvent<E>> afterNonSuccessValidation) {
-        ItemPropertyChangeListener<E> listener = event -> {
-            try {
-                validation.validate(event);
-                afterSuccessValidation.accept(event);
-            } catch (ValidationException e) {
-                afterNonSuccessValidation.accept(event);
-            }
-        };
-        datasource.addItemPropertyChangeListener(listener);
-        propertyChangeListeners.add(listener);
-    }
-
-    default <E extends Entity<UUID>> void registerCollectionChangeListener(CollectionDatasource<E, UUID> datasource,
-                                                                           Validator<CollectionChangeEvent<E, UUID>> validation,
-                                                                           Consumer<CollectionChangeEvent<E, UUID>> afterSuccessValidation,
-                                                                           Consumer<CollectionChangeEvent<E, UUID>> afterNonSuccessValidation) {
-        CollectionChangeListener<E, UUID> listener = event -> {
-            try {
-                validation.validate(event);
-                afterSuccessValidation.accept(event);
-            } catch (ValidationException e) {
-                afterNonSuccessValidation.accept(event);
-            }
-        };
-        datasource.addCollectionChangeListener(listener);
-        collectionChangeListeners.add(listener);
-    }
+public interface Presenter {
 
     default <E extends Entity<UUID>> void setValueIgnoreListeners(Datasource<E> ds, String propertyName, Object value) {
-        disablePropertyChangeListeners(ds);
+        ((AbstractDatasource) ds).enableListeners(false);
         setValue(ds, propertyName, value);
-        enablePropertyChangeListeners(ds);
-    }
-
-    default <E extends Entity<UUID>> void setValue(Datasource<E> ds, String propertyName, Object value) {
-        ds.getItem().setValueEx(propertyName, value);
+        ((AbstractDatasource) ds).enableListeners(true);
     }
 
     default <E extends Entity<UUID>> void processItemsIgnoreListeners(CollectionDatasource<E, UUID> ds, Collection<E> items,
                                                                       Operation operation) {
-        disableCollectionChangeListeners(ds);
+        ((AbstractDatasource) ds).enableListeners(false);
         processItems(ds, items, operation);
-        enableCollectionChangeListeners(ds);
+        ((AbstractDatasource) ds).enableListeners(true);
+    }
+
+    default <E extends Entity<UUID>> void setValue(Datasource<E> ds, String propertyName, Object value) {
+        ds.getItem().setValueEx(propertyName, value);
     }
 
     default <E extends Entity<UUID>> void processItems(CollectionDatasource<E, UUID> ds, Collection<E> items,
@@ -95,21 +55,5 @@ public interface Presenter <E extends Entity> {
             default:
                 throw new UnsupportedOperationException("Not implemented yet");
         }
-    }
-
-    default <E extends Entity<UUID>> void disablePropertyChangeListeners(Datasource<E> datasource) {
-        propertyChangeListeners.forEach(datasource::removeItemPropertyChangeListener);
-    }
-
-    default <E extends Entity<UUID>> void enablePropertyChangeListeners(Datasource<E> datasource) {
-        propertyChangeListeners.forEach(datasource::addItemPropertyChangeListener);
-    }
-
-    default <E extends Entity<UUID>> void disableCollectionChangeListeners(CollectionDatasource<E, UUID> datasource) {
-        collectionChangeListeners.forEach(datasource::removeCollectionChangeListener);
-    }
-
-    default <E extends Entity<UUID>> void enableCollectionChangeListeners(CollectionDatasource<E, UUID> datasource) {
-        collectionChangeListeners.forEach(datasource::addCollectionChangeListener);
     }
 }

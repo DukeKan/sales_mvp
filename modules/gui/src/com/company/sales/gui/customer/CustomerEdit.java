@@ -17,21 +17,18 @@ package com.company.sales.gui.customer;
 
 import com.company.sales.entity.Customer;
 import com.company.sales.entity.Order;
-import com.company.sales.mvp.presentes.impl.CustomerPresenterImpl;
-import com.company.sales.mvp.presentes.interfaces.Presenter;
+import com.company.sales.mvp.linkers.MvpLinker;
 import com.haulmont.cuba.gui.components.AbstractEditor;
-import com.haulmont.cuba.gui.components.Button;
-import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static com.haulmont.cuba.gui.data.CollectionDatasource.Operation.REMOVE;
+
 public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEditScreen {
-    private Presenter presenter;
     private Consumer<Customer> calculateBtnListener;
 
     @Inject
@@ -39,16 +36,14 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
     @Inject
     private CollectionDatasource<Order, UUID> ordersDs;
 
-
     @Override
     protected void postInit() {
         super.postInit();
-        presenter = new CustomerPresenterImpl(this);
+        MvpLinker.create(this);
     }
 
     public void onRemoveAll() {
-        Collection<Order> orders = ordersDs.getItems();
-        safeRemoveItemsFromDatasource(ordersDs, orders);
+        processItems(ordersDs, ordersDs.getItems(), REMOVE);
     }
 
     public void onCalculate(){

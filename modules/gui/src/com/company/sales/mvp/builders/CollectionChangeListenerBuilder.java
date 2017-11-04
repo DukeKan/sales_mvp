@@ -30,6 +30,7 @@ public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
     @Override
     public CollectionChangeListenerBuilder<E> setDatasource(CollectionDatasource<E, UUID> datasource) {
         this.datasource = datasource;
+
         return this;
     }
 

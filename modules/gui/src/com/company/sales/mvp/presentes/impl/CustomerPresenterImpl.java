@@ -14,7 +14,6 @@ import com.company.sales.mvp.models.impl.CustomerModelImpl;
 import com.company.sales.mvp.models.interfaces.CustomerModel;
 import com.company.sales.mvp.presentes.interfaces.Presenter;
 import com.haulmont.cuba.gui.components.ValidationException;
-import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.CollectionDatasource.CollectionChangeEvent;
 import com.haulmont.cuba.gui.data.Datasource.ItemPropertyChangeEvent;
 
@@ -30,25 +29,26 @@ public class CustomerPresenterImpl implements Presenter {
     private CustomerEditScreen screen;
     private CustomerModel model;
 
-    public CustomerPresenterImpl(CustomerEdit screen) {
+    public CustomerPresenterImpl(CustomerEdit screen, CustomerModelImpl model) {
         this.screen = screen;
-        this.model = new CustomerModelImpl();
+        this.model = model;
         init();
     }
 
     private void init() {
         ListenerBuilder.buildPropertyListener(Customer.class)
                 .setDatasource(screen.getCustomerDs())
+                .setValidationHandler(this::validateCustomerPropertyChange)
                 .setAfterNonSuccessValidationHandler((event) ->
                         setValueIgnoreListeners(event.getDs(), event.getProperty(), event.getPrevValue()))
-                .setValidationHandler(this::validateCustomerPropertyChange)
                 .build();
 
         ListenerBuilder.buildCollectionChangeListener(Order.class)
                 .setDatasource(screen.getOrdersDs())
-                .setAfterSuccessValidationHandler(this::processCollectionChange)
-                .setAfterNonSuccessValidationHandler((event) -> processItemsIgnoreListeners(event.getDs(), event.getItems(), ADD))
                 .setValidationHandler(this::validateOrderCollectionChange)
+                .setAfterSuccessValidationHandler(this::processOrdersCollectionChange)
+                .setAfterNonSuccessValidationHandler((event) ->
+                        processItemsIgnoreListeners(event.getDs(), event.getItems(), ADD))
                 .build();
 
         screen.addCalculateBtnListener(this::onCalculatePressed);
@@ -69,15 +69,15 @@ public class CustomerPresenterImpl implements Presenter {
     public void validateOrderCollectionChange(CollectionChangeEvent<Order, UUID> event) throws ValidationException {
         if (event.getOperation().equals(REMOVE)) {
             if (model.allOrdersAreZero(event.getItems())) {
-                screen.showIncorrectNameNotification();
+                screen.showIncorrectOrderAmountNotification();
                 throw new ValidationException("Orders amount!");
             }
         }
     }
 
-    private void processCollectionChange(CollectionChangeEvent<Order, UUID> event) {
+    private void processOrdersCollectionChange(CollectionChangeEvent<Order, UUID> event) {
         if (event.getOperation().equals(REMOVE)) {
-            event.getItems().forEach(screen.getOrdersDs()::removeItem);
+            processItemsIgnoreListeners(event.getDs(), event.getItems(), event.getOperation());
         }
     }
 

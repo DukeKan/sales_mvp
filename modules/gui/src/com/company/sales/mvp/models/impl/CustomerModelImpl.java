@@ -17,6 +17,8 @@ import java.util.Collection;
  */
 public class CustomerModelImpl implements CustomerModel<Customer> {
 
+    private CustomerService customerService = AppBeans.get(CustomerService.NAME);
+
     @Override
     public boolean allOrdersAreZero(Collection<Order> orders) {
         return orders.stream().allMatch(order -> order.getAmount() != null && order.getAmount().toBigInteger().intValue() == 0);
@@ -24,7 +26,6 @@ public class CustomerModelImpl implements CustomerModel<Customer> {
 
     @Override
     public int getOrdersAmount(Customer customer) {
-        CustomerService customerService = AppBeans.get(CustomerService.NAME);
         return customerService.countAmount(customer); // такой проброс выглядит некрасиво, но зато одна точка входа в сервис
     }
 }
