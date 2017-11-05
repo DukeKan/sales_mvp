@@ -4,6 +4,8 @@
 
 package com.company.sales.mvp.builders;
 
+import com.company.sales.mvp.presentes.impl.AbstractPresenter;
+import com.company.sales.mvp.presentes.interfaces.Presenter;
 import com.company.sales.mvp.validators.CollectionChangeValidator;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.ValidationException;
@@ -19,13 +21,17 @@ import java.util.function.Consumer;
 public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
         implements DatasourceListenerBuilder<E, CollectionDatasource<E, UUID>, CollectionChangeValidator<E>, CollectionChangeEvent<E, UUID>> {
 
+    private AbstractPresenter presenter;
+
     private CollectionDatasource<E, UUID> datasource;
     private CollectionChangeValidator<E> validationHandler;
     private Consumer<CollectionChangeEvent<E, UUID>> afterSuccessValidationHandler;
     private Consumer<CollectionChangeEvent<E, UUID>> afterNonSuccessValidationHandler;
     private Consumer<CollectionChangeEvent<E, UUID>> anywayDoneHandler;
 
-    CollectionChangeListenerBuilder(){}
+    CollectionChangeListenerBuilder(AbstractPresenter presenter){
+        this.presenter = presenter;
+    }
 
     @Override
     public CollectionChangeListenerBuilder<E> setDatasource(CollectionDatasource<E, UUID> datasource) {
@@ -65,7 +71,8 @@ public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
     @Override
     public void build() {
         if (datasource != null) {
-            datasource.addCollectionChangeListener(event -> {
+            datasource.getDsContext().getFrameContext().getFrame();
+            CollectionDatasource.CollectionChangeListener<E, UUID> listener = event -> {
                 if (anywayDoneHandler != null) {
                     anywayDoneHandler.accept(event);
                 }
@@ -81,7 +88,9 @@ public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
                         afterNonSuccessValidationHandler.accept(event);
                     }
                 }
-            });
+            };
+            datasource.addCollectionChangeListener(listener);
+            presenter.addCollectionChangeListener(datasource, listener);
         } else {
             throw new NullPointerException("Datasource is not provided");
         }

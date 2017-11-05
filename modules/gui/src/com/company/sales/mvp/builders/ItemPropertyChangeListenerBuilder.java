@@ -4,6 +4,8 @@
 
 package com.company.sales.mvp.builders;
 
+import com.company.sales.mvp.presentes.impl.AbstractPresenter;
+import com.company.sales.mvp.presentes.interfaces.Presenter;
 import com.company.sales.mvp.validators.ItemPropertyChangeValidator;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.ValidationException;
@@ -19,13 +21,17 @@ import java.util.function.Consumer;
 public class ItemPropertyChangeListenerBuilder<E extends Entity<UUID>>
         implements DatasourceListenerBuilder<E, Datasource<E>, ItemPropertyChangeValidator<E>, ItemPropertyChangeEvent<E>> {
 
+    private AbstractPresenter presenter = null;
+
     private Datasource<E> datasource;
     private ItemPropertyChangeValidator<E> validationHandler;
     private Consumer<ItemPropertyChangeEvent<E>> afterSuccessValidationHandler;
     private Consumer<ItemPropertyChangeEvent<E>> afterNonSuccessValidationHandler;
     private Consumer<ItemPropertyChangeEvent<E>> anywayDoneHandler;
 
-    ItemPropertyChangeListenerBuilder(){}
+    ItemPropertyChangeListenerBuilder(AbstractPresenter presenter){
+        this.presenter = presenter;
+    }
 
     @Override
     public ItemPropertyChangeListenerBuilder<E> setDatasource(Datasource<E> datasource) {
@@ -65,7 +71,7 @@ public class ItemPropertyChangeListenerBuilder<E extends Entity<UUID>>
     @Override
     public void build() {
         if (datasource != null) {
-            datasource.addItemPropertyChangeListener(event -> {
+            Datasource.ItemPropertyChangeListener<E> listener = event -> {
                 if (anywayDoneHandler != null) {
                     anywayDoneHandler.accept(event);
                 }
@@ -81,7 +87,9 @@ public class ItemPropertyChangeListenerBuilder<E extends Entity<UUID>>
                         afterNonSuccessValidationHandler.accept(event);
                     }
                 }
-            });
+            };
+            datasource.addItemPropertyChangeListener(listener);
+            presenter.addItemPropertyChangeListener(datasource, listener);
         } else {
             throw new NullPointerException("Datasource is not provided");
         }

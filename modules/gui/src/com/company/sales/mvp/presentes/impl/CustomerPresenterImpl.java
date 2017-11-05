@@ -25,7 +25,7 @@ import static com.haulmont.cuba.gui.data.CollectionDatasource.Operation.REMOVE;
 /**
  * Created by DukeKan on 13.10.2017.
  */
-public class CustomerPresenterImpl implements Presenter {
+public class CustomerPresenterImpl extends AbstractPresenter {
     private CustomerEditScreen screen;
     private CustomerModel model;
 
@@ -36,14 +36,14 @@ public class CustomerPresenterImpl implements Presenter {
     }
 
     private void init() {
-        ListenerBuilder.buildPropertyListener(Customer.class)
+        ListenerBuilder.buildPropertyListener(Customer.class, this)
                 .setDatasource(screen.getCustomerDs())
                 .setValidationHandler(this::validateCustomerPropertyChange)
                 .setAfterNonSuccessValidationHandler((event) ->
                         setValueIgnoreListeners(event.getDs(), event.getProperty(), event.getPrevValue()))
                 .build();
 
-        ListenerBuilder.buildCollectionChangeListener(Order.class)
+        ListenerBuilder.buildCollectionChangeListener(Order.class, this)
                 .setDatasource(screen.getOrdersDs())
                 .setValidationHandler(this::validateOrderCollectionChange)
                 .setAfterSuccessValidationHandler(this::processOrdersCollectionChange)
@@ -79,9 +79,5 @@ public class CustomerPresenterImpl implements Presenter {
         if (event.getOperation().equals(REMOVE)) {
             processItemsIgnoreListeners(event.getDs(), event.getItems(), event.getOperation());
         }
-    }
-
-    public void setModel(CustomerModel model) {
-        this.model = model;
     }
 }
