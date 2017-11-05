@@ -37,9 +37,6 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
     @Inject
     private CollectionDatasource<Order, UUID> ordersDs;
 
-    @Inject
-    CustomerService customerService;
-
     @Override
     protected void postInit() {
         super.postInit();
@@ -51,7 +48,6 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
     }
 
     public void onCalculate() {
-        customerService.countAmount(getItem());
         if (calculateBtnListener != null) {
             calculateBtnListener.accept(getItem());
         }

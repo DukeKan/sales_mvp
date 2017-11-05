@@ -71,7 +71,6 @@ public class CollectionChangeListenerBuilder<E extends Entity<UUID>>
     @Override
     public void build() {
         if (datasource != null) {
-            datasource.getDsContext().getFrameContext().getFrame();
             CollectionDatasource.CollectionChangeListener<E, UUID> listener = event -> {
                 if (anywayDoneHandler != null) {
                     anywayDoneHandler.accept(event);
