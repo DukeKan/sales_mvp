@@ -5,6 +5,7 @@
 package com.company.sales.core;
 
 import com.company.sales.entity.Customer;
+import com.company.sales.beans_ext.AppBeansExt;
 import com.company.sales.services.CustomerService;
 import com.haulmont.cuba.core.global.*;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class CustomerServiceTest {
     @Test
     public void testCalculateAmount() throws Exception {
         DataManager dataManager = AppBeans.get(DataManager.class);
-        CustomerService customerService = AppBeans.get(CustomerService.class);
+        CustomerService customerService = AppBeansExt.get(CustomerService.NAME);
 
         Customer customer = metadata.create(Customer.class);
         customer.setName("Test customer");

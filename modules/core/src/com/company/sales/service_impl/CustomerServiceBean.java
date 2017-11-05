@@ -9,16 +9,17 @@ import com.company.sales.entity.Order;
 import com.company.sales.services.CustomerService;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
-import com.haulmont.cuba.core.global.View;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+
+import static com.haulmont.cuba.core.global.View.LOCAL;
 
 /**
  * Created by DukeKan on 21.10.2017.
  */
 @Service(CustomerService.NAME)
-public class CustomerServiceBean implements CustomerService{
+public class CustomerServiceBean implements CustomerService {
 
     @Inject
     private DataManager dataManager;
@@ -28,7 +29,7 @@ public class CustomerServiceBean implements CustomerService{
         LoadContext<Order> lc = LoadContext.create(Order.class);
         lc.setQueryString("select o from sales$Order o where o.customer.id = :customer");
         lc.getQuery().setParameter("customer", customer);
-        lc.setView(View.LOCAL);
+        lc.setView(LOCAL);
         return dataManager.loadList(lc).stream().mapToInt(order -> order.getAmount().intValue()).sum();
     }
 }

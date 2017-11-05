@@ -18,6 +18,7 @@ package com.company.sales.gui.customer;
 import com.company.sales.entity.Customer;
 import com.company.sales.entity.Order;
 import com.company.sales.mvp.linkers.MvpLinker;
+import com.company.sales.services.CustomerService;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
@@ -36,6 +37,9 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
     @Inject
     private CollectionDatasource<Order, UUID> ordersDs;
 
+    @Inject
+    CustomerService customerService;
+
     @Override
     protected void postInit() {
         super.postInit();
@@ -46,13 +50,14 @@ public class CustomerEdit extends AbstractEditor<Customer> implements CustomerEd
         processItems(ordersDs, ordersDs.getItems(), REMOVE);
     }
 
-    public void onCalculate(){
+    public void onCalculate() {
+        customerService.countAmount(getItem());
         if (calculateBtnListener != null) {
             calculateBtnListener.accept(getItem());
         }
     }
 
-    public void showIncorrectNameNotification(){
+    public void showIncorrectNameNotification() {
         showNotification("Incorrect name!");
     }
 

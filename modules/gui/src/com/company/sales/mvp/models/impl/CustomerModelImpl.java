@@ -7,8 +7,8 @@ package com.company.sales.mvp.models.impl;
 import com.company.sales.entity.Customer;
 import com.company.sales.entity.Order;
 import com.company.sales.mvp.models.interfaces.CustomerModel;
+import com.company.sales.beans_ext.AppBeansExt;
 import com.company.sales.services.CustomerService;
-import com.haulmont.cuba.core.global.AppBeans;
 
 import java.util.Collection;
 
@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public class CustomerModelImpl implements CustomerModel<Customer> {
 
-    private CustomerService customerService = AppBeans.get(CustomerService.NAME);
+    private CustomerService customerService = AppBeansExt.get(CustomerService.NAME);
 
     @Override
     public boolean allOrdersAreZero(Collection<Order> orders) {
